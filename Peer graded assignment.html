@@ -1,0 +1,26 @@
+Interactive Data Mapping - Data Products - Coursera
+Vidya Cuddalore Arivudainambi
+
+January 21, 2017
+Interactive Map Assignment: Developing Data Products
+
+
+```{r}
+library(leaflet)
+library(zipcode)
+library(maps)
+data("zipcode")     # load data zipcode
+str(zipcode)    # dataset contain city state, latitude, and longitude of each zipcode
+```
+
+```{r}
+CleanZ<-zipcode[!(is.na(zipcode[,4])|is.na(zipcode[,5])),]  # remove rows with missing latitude and longitude
+mapStates <- map("county", fill = TRUE, plot = FALSE)   # mapdata of US county boundaries
+Zip_map<-leaflet(data = mapStates) %>%           # creates a Leaflet map based on the county boundries    
+    addTiles() %>%      # Add graphics elements and layers to the map widget
+    addPolygons(fillColor = topo.colors(10, alpha = NULL), stroke = FALSE)%>%       # fill counties with colors
+    addMarkers(lat=CleanZ$latitude,lng=CleanZ$longitude, 
+                     popup = paste0("Zip Code: ",CleanZ$zip,'<br/>', CleanZ$city, ", ", CleanZ$state) ,  
+                     clusterOptions = markerClusterOptions())       # add zipcode latitude, longtitude, and city & state names
+Zip_map      #display the Zip Code Leaflet map 
+```
